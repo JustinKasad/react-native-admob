@@ -61,7 +61,7 @@
 {
     GADAdSize adSize = [RCTConvert GADAdSize:size];
     if (GADAdSizeEqualToSize(adSize, kGADAdSizeInvalid)) {
-        RCTLogWarn(@"Invalid adSize %@", jsonValue);
+        RCTLogWarn(@"Invalid adSize %@", size);
     }
     else {
         [_bannerView resize:adSize];
