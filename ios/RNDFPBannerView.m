@@ -60,7 +60,12 @@
 - (void) setAdSize:(NSString *)size
 {
     GADAdSize adSize = [RCTConvert GADAdSize:size];
-    [_bannerView resize:adSize];
+    if (GADAdSizeEqualToSize(adSize, kGADAdSizeInvalid)) {
+        RCTLogWarn(@"Invalid adSize %@", jsonValue);
+    }
+    else {
+        [_bannerView resize:adSize];
+    }
 }
 
 - (void)setValidAdSizes:(NSArray *)adSizes
