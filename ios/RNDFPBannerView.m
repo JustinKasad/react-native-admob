@@ -57,6 +57,12 @@
     [_bannerView loadRequest:request];
 }
 
+- (void) setAdSize:(NSString *)size
+{
+    GADAdSize adSize = [RCTConvert GADAdSize:size];
+    [_bannerView resize:adSize];
+}
+
 - (void)setValidAdSizes:(NSArray *)adSizes
 {
     NSMutableArray *validAdSizes = [[NSMutableArray alloc] initWithCapacity:adSizes.count];
