@@ -34,7 +34,6 @@ class ReactPublisherAdView extends ReactViewGroup implements AppEventListener {
     AdSize[] validAdSizes;
     String adUnitID;
     AdSize adSize;
-    Integer nativeAdHeight = 82;
 
     public ReactPublisherAdView(final Context context) {
         super(context);
@@ -203,6 +202,8 @@ public class RNPublisherBannerViewManager extends ViewGroupManager<ReactPublishe
     public static final String EVENT_AD_CLOSED = "onAdClosed";
     public static final String EVENT_AD_LEFT_APPLICATION = "onAdLeftApplication";
     public static final String EVENT_APP_EVENT = "onAppEvent";
+
+    public static final int nativeAdHeight = 82;
 
     public static final int COMMAND_LOAD_BANNER = 1;
 
