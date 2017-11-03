@@ -34,6 +34,7 @@ class ReactPublisherAdView extends ReactViewGroup implements AppEventListener {
     AdSize[] validAdSizes;
     String adUnitID;
     AdSize adSize;
+    Integer nativeAdHeight = 82;
 
     public ReactPublisherAdView(final Context context) {
         super(context);
@@ -242,8 +243,17 @@ public class RNPublisherBannerViewManager extends ViewGroupManager<ReactPublishe
 
     @ReactProp(name = PROP_AD_SIZE)
     public void setPropAdSize(final ReactPublisherAdView view, final String sizeString) {
-        AdSize adSize = getAdSizeFromString(sizeString);
-        view.setAdSize(adSize);
+        AdSize adSize;
+        if(isNumeric(sizeString)){
+            adSize = new AdSize(Integer.parseInt(sizeString), nativeAdHeight);;
+        } else {
+            adSize = getAdSizeFromString(sizeString);
+        }        
+	view.setAdSize(adSize);
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
     }
 
     @ReactProp(name = PROP_VALID_AD_SIZES)
