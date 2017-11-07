@@ -158,9 +158,9 @@ class ReactPublisherAdView extends ReactViewGroup implements AppEventListener {
 
         if(customTargeting != null) {
             HashMap map = ((ReadableNativeMap) customTargeting).toHashMap();
-            Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator() ;
+            Iterator<Map.Entry<String, ArrayList>> iterator = map.entrySet().iterator() ;
             while(iterator.hasNext()){
-                Map.Entry<String, String> val = iterator.next();
+                Map.Entry<String, ArrayList> val = iterator.next();
                 adRequestBuilder.addCustomTargeting(val.getKey(), val.getValue());
             }
         }
