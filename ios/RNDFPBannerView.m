@@ -54,7 +54,9 @@
 - (void)loadBanner {
     DFPRequest *request = [DFPRequest request];
     request.testDevices = _testDevices;
-    request.customTargeting = _customTargeting;
+    if (_customTargeting) {
+        request.customTargeting = _customTargeting;
+    }
     [_bannerView loadRequest:request];
 }
 
