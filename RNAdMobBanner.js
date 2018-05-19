@@ -5,7 +5,7 @@ import {
   findNodeHandle,
   ViewPropTypes,
 } from 'react-native';
-import { string, func, arrayOf } from 'prop-types';
+import { string, func, arrayOf, object } from 'prop-types';
 
 import { createErrorFromErrorData } from './utils';
 
@@ -87,6 +87,11 @@ AdMobBanner.propTypes = {
    * AdMob ad unit ID
    */
   adUnitID: string,
+
+  /**
+   * Object of key/value pairs for custom key/value targeting
+   */
+  customTargeting: object,
 
   /**
    * Array of test devices. Use AdMobBanner.simulatorId for the simulator

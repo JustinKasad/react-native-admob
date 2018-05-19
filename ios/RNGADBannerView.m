@@ -55,8 +55,11 @@
                                 });
         }
     }
-    GADRequest *request = [GADRequest request];
+    DFPRequest *request = [DFPRequest request];
     request.testDevices = _testDevices;
+    if(_customTargeting) {
+        request.customTargeting = _customTargeting;
+    }
     [_bannerView loadRequest:request];
 }
 
