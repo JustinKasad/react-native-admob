@@ -20,13 +20,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableNativeMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Iterator;
 
 class ReactAdView extends ReactViewGroup {
 
@@ -34,7 +31,6 @@ class ReactAdView extends ReactViewGroup {
 
     String adUnitID;
     String[] testDevices;
-    ReadableMap customTargeting;
 
     public ReactAdView(final Context context) {
         super(context);
@@ -134,16 +130,6 @@ class ReactAdView extends ReactViewGroup {
                 adRequestBuilder.addTestDevice(testDevices[i]);
             }
         }
-        if(customTargeting != null) {
-            HashMap map = ((ReadableNativeMap) customTargeting).toHashMap();
-            Iterator<Map.Entry<String, ArrayList>> iterator = map.entrySet().iterator() ;
-            while(iterator.hasNext()){
-                Map.Entry<String, ArrayList> val = iterator.next();
-                adRequestBuilder.addCustomTargeting(val.getKey(), val.getValue());
-            }
-        }
-
-
         AdRequest adRequest = adRequestBuilder.build();
         this.adView.loadAd(adRequest);
     }
@@ -161,8 +147,6 @@ class ReactAdView extends ReactViewGroup {
     public void setTestDevices(String[] testDevices) {
         this.testDevices = testDevices;
     }
-
-    public void setCustomTargeting(ReadableMap customTargeting) { this.customTargeting = customTargeting; }
 
     public void setAdSize(AdSize adSize) {
         this.adView.setAdSize(adSize);
@@ -183,7 +167,6 @@ public class RNAdMobBannerViewManager extends ViewGroupManager<ReactAdView> {
     public static final String EVENT_AD_OPENED = "onAdOpened";
     public static final String EVENT_AD_CLOSED = "onAdClosed";
     public static final String EVENT_AD_LEFT_APPLICATION = "onAdLeftApplication";
-    public static final String PROP_CUSTOM_TARGETING = "customTargeting";
 
     public static final int COMMAND_LOAD_BANNER = 1;
 
@@ -237,11 +220,6 @@ public class RNAdMobBannerViewManager extends ViewGroupManager<ReactAdView> {
         ReadableNativeArray nativeArray = (ReadableNativeArray)testDevices;
         ArrayList<Object> list = nativeArray.toArrayList();
         view.setTestDevices(list.toArray(new String[list.size()]));
-    }
-
-    @ReactProp(name = PROP_CUSTOM_TARGETING)
-    public void setPropCustomTargeting(final ReactAdView view, final ReadableMap customTargeting) {
-        view.setCustomTargeting(customTargeting);
     }
 
     private AdSize getAdSizeFromString(String adSize) {
