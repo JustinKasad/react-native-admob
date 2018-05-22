@@ -11,6 +11,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableArray;
@@ -18,6 +20,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +38,8 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
     public static final String EVENT_AD_CLOSED = "interstitialAdClosed";
     public static final String EVENT_AD_LEFT_APPLICATION = "interstitialAdLeftApplication";
 
-    InterstitialAd mInterstitialAd;
+    PublisherInterstitialAd mInterstitialAd;
+    ReadableMap customTargeting;
     String[] testDevices;
 
     private Promise mRequestAdPromise;
@@ -45,7 +51,7 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
 
     public RNAdMobInterstitialAdModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mInterstitialAd = new InterstitialAd(reactContext);
+        mInterstitialAd = new PublisherInterstitialAd(reactContext);
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -117,6 +123,11 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setCustomTargeting(ReadableMap target) {
+        customTargeting = target;
+    }
+
+    @ReactMethod
     public void requestAd(final Promise promise) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -125,13 +136,19 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
                     promise.reject("E_AD_ALREADY_LOADED", "Ad is already loaded.");
                 } else {
                     mRequestAdPromise = promise;
-                    AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+                    PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
                     if (testDevices != null) {
                         for (int i = 0; i < testDevices.length; i++) {
                             adRequestBuilder.addTestDevice(testDevices[i]);
                         }
                     }
-                    AdRequest adRequest = adRequestBuilder.build();
+
+                    if(customTargeting != null) {
+                        String key = (String) ((ReadableNativeMap) customTargeting).toHashMap().keySet().toArray()[0];
+                        adRequestBuilder.addCustomTargeting(key, customTargeting.getString(key));
+                    }
+
+                    PublisherAdRequest adRequest = adRequestBuilder.build();
                     mInterstitialAd.loadAd(adRequest);
                 }
             }
