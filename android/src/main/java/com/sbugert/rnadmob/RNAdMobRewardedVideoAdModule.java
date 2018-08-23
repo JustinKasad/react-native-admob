@@ -86,7 +86,6 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
         sendEvent(EVENT_AD_LEFT_APPLICATION, null);
     }
 
-    @Override
     public void onRewardedVideoCompleted() {
         sendEvent(EVENT_VIDEO_COMPLETED, null);
     }
