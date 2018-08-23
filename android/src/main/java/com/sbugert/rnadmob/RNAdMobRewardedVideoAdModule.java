@@ -33,6 +33,7 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
     public static final String EVENT_AD_LEFT_APPLICATION = "rewardedVideoAdLeftApplication";
     public static final String EVENT_REWARDED = "rewardedVideoAdRewarded";
     public static final String EVENT_VIDEO_STARTED = "rewardedVideoAdVideoStarted";
+    public static final String EVENT_VIDEO_COMPLETED = "rewardedVideoAdVideoCompleted";
 
     RewardedVideoAd mRewardedVideoAd;
     String adUnitID;
@@ -83,6 +84,11 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
     @Override
     public void onRewardedVideoAdLeftApplication() {
         sendEvent(EVENT_AD_LEFT_APPLICATION, null);
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        sendEvent(EVENT_VIDEO_COMPLETED, null);
     }
 
     @Override
@@ -148,7 +154,11 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
 
                     if (testDevices != null) {
                         for (int i = 0; i < testDevices.length; i++) {
-                            adRequestBuilder.addTestDevice(testDevices[i]);
+                            String testDevice = testDevices[i];
+                            if (testDevice == "SIMULATOR") {
+                                testDevice = AdRequest.DEVICE_ID_EMULATOR;
+                            }
+                            adRequestBuilder.addTestDevice(testDevice);
                         }
                     }
 

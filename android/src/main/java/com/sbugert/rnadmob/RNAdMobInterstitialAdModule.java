@@ -112,7 +112,9 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setAdUnitID(String adUnitID) {
-        mInterstitialAd.setAdUnitId(adUnitID);
+        if (mInterstitialAd.getAdUnitId() == null) {
+            mInterstitialAd.setAdUnitId(adUnitID);
+        }
     }
 
     @ReactMethod
@@ -139,7 +141,11 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
                     PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
                     if (testDevices != null) {
                         for (int i = 0; i < testDevices.length; i++) {
-                            adRequestBuilder.addTestDevice(testDevices[i]);
+                            String testDevice = testDevices[i];
+                            if (testDevice == "SIMULATOR") {
+                                testDevice = AdRequest.DEVICE_ID_EMULATOR;
+                            }
+                            adRequestBuilder.addTestDevice(testDevice);
                         }
                     }
 
@@ -178,13 +184,5 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
                 callback.invoke(mInterstitialAd.isLoaded());
             }
         });
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public Map<String, Object> getConstants() {
-        final Map<String, Object> constants = new HashMap<>();
-        constants.put("simulatorId", AdRequest.DEVICE_ID_EMULATOR);
-        return constants;
     }
 }

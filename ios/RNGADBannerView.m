@@ -1,4 +1,5 @@
 #import "RNGADBannerView.h"
+#import "RNAdMobUtils.h"
 
 #if __has_include(<React/RCTBridgeModule.h>)
 #import <React/RCTBridgeModule.h>
@@ -61,6 +62,11 @@
         request.customTargeting = _customTargeting;
     }
     [_bannerView loadRequest:request];
+}
+
+- (void)setTestDevices:(NSArray *)testDevices
+{
+    _testDevices = RNAdMobProcessTestDevices(testDevices, kGADSimulatorID);
 }
 
 -(void)layoutSubviews
