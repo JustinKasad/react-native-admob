@@ -2,6 +2,7 @@ package com.sbugert.rnadmob;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
@@ -28,11 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 class ReactFluidAdView extends LinearLayout implements AppEventListener {
 
     protected PublisherAdView adView;
+    protected ReactFluidAdView _self;
 
     String[] testDevices;
     ReadableMap customTargeting;
@@ -53,19 +56,40 @@ class ReactFluidAdView extends LinearLayout implements AppEventListener {
         final Context context = getContext();
         this.adView = new PublisherAdView(context);
         this.adView.setAppEventListener(this);
+        _self = this;
+
         this.adView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 int width = adView.getAdSize().getWidthInPixels(context);
                 int height = adView.getAdSize().getHeightInPixels(context);
-                Log.i("justin 1 width", String.valueOf(width));
-                Log.i("justin 1 height", String.valueOf(height));
                 int left = adView.getLeft();
                 int top = adView.getTop();
                 adView.measure(width, height);
                 adView.layout(left, top, left + width, top + height);
                 sendOnSizeChangeEvent();
                 sendEvent(RNFluidBannerViewManager.EVENT_AD_LOADED, null);
+
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                DisplayMetrics dm = new DisplayMetrics();
+
+                                WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                                if (windowManager != null) {
+                                    windowManager.getDefaultDisplay().getMetrics(dm);
+                                }
+
+                                float density = dm.density;
+                                int height = (int) (_self.adHeight * density);
+                                int width =  (int) (_self.adWidth * density);
+                                int left = adView.getLeft();
+                                int top = adView.getTop();
+                                adView.measure(width, height);
+                                adView.layout(left, top, left + width, top + height);
+                            }
+                        },
+                        100);
             }
 
             @Override
@@ -126,8 +150,6 @@ class ReactFluidAdView extends LinearLayout implements AppEventListener {
             width = adSize.getWidth();
             height = adSize.getHeight();
         }
-        Log.i("justin 2 width", String.valueOf(width));
-        Log.i("justin 2 height", String.valueOf(height));
         event.putDouble("width", width);
         event.putDouble("height", height);
         sendEvent(RNFluidBannerViewManager.EVENT_SIZE_CHANGE, event);
@@ -158,7 +180,6 @@ class ReactFluidAdView extends LinearLayout implements AppEventListener {
 
         AdSize[] adSizesArray = adSizes.toArray(new AdSize[adSizes.size()]);
 
-        Log.i("adSizesArray justin", String.valueOf(adSizesArray[0].isFluid()));
         this.adView.setAdSizes(adSizesArray);
 
         PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
