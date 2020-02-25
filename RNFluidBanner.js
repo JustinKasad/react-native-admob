@@ -28,7 +28,7 @@ class FluidBanner extends Component {
   loadBanner() {
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this._bannerView),
-      UIManager.RNFluidBannerView.Commands.loadBanner,
+      UIManager.getViewManagerConfig('RNFluidBannerView').Commands.loadBanner,
       null,
     );
   }
