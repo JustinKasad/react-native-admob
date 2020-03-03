@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
   s.weak_frameworks        = 'GoogleMobileAds'
   s.pod_target_xcconfig    = {
     'FRAMEWORK_SEARCH_PATHS' => '"$(PODS_ROOT)/Google-Mobile-Ads-SDK/Frameworks/**"',
+    'VALID_ARCHS' => 'arm64 arm64e',
     'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64'
   }
 
